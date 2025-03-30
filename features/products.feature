@@ -38,3 +38,70 @@ Scenario: Create a Product
     And I should see "True" in the "Available" dropdown
     And I should see "Tools" in the "Category" dropdown
     And I should see "34.95" in the "Price" field
+
+Scenario: Read a Product
+    Given I have created a product with the name "Hammer"
+    When I search for the product by "Name" as "Hammer"
+    Then I should see "Hammer" in the product list
+    And I should see "Claw hammer" as the description
+    And I should see "34.95" as the price
+    And I should see "True" as the availability
+    And I should see "Tools" as the category
+
+Scenario: Update a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "Hat"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I set the "Price" to "49.95"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I search for the product "Hat"
+    Then I should see "49.95" in the "Price" field
+
+Scenario: Delete a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "Hat"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I press the "Delete" button
+    Then I should see the message "Success"
+    When I search for the product "Hat"
+    Then I should see the message "Product not found"
+    
+Scenario: List all Products
+    Given the following products exist:
+        | name     | description     | price   | available | category   |
+        | Hat      | A red fedora    | 59.95   | True      | CLOTHS     |
+        | Shoes    | Blue shoes      | 120.50  | False     | CLOTHS     |
+        | Big Mac  | 1/4 lb burger   | 5.99    | True      | FOOD       |
+        | Sheets   | Full bed sheets | 87.00   | True      | HOUSEWARES |
+    When I visit the "Home Page"
+    Then I should see "Hat"
+    And I should see "Shoes"
+    And I should see "Big Mac"
+    And I should see "Sheets"
+
+Scenario: Search for Products by Category
+    Given I have products with categories "CLOTHS", "FOOD", and "HOUSEWARES"
+    When I search for products by "Category" as "CLOTHS"
+    Then I should see "Hat"
+    And I should see "Shoes"
+    And I should not see "Big Mac"
+    And I should not see "Sheets"
+
+Scenario: Search for Products by Availability
+    Given I have products with availability "True" and "False"
+    When I search for products by "Availability" as "True"
+    Then I should see "Hat"
+    And I should see "Big Mac"
+    And I should see "Sheets"
+    And I should not see "Shoes"
+
+Scenario: Search for Products by Name
+    Given I have products with names "Hat", "Shoes", "Big Mac", and "Sheets"
+    When I search for products by "Name" as "Hat"
+    Then I should see "Hat"
+    And I should not see "Shoes"
+    And I should not see "Big Mac"
+    And I should not see "Sheets"
